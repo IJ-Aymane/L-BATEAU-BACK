@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: Lbateau
+
+  data:
+    mongodb:
+      auto-index-creation: true
+
+  mvc:
+    view:
+      prefix: /WEB-INF/
+      suffix: .jsp
+  spring:
+  mongodb:
+    uri: mongodb+srv://l-bateau:l-bateau@l-bateau.c50amf6.mongodb.net/Lbateau?retryWrites=true&w=majority
+
+ai:
+  service:
+    url: http://localhost:5000
+
+logging:
+  level:
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
