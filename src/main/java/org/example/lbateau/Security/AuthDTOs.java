@@ -1,37 +1,34 @@
 package org.example.lbateau.Security;
 
-// ── Login request ──────────────────────────────────────────
-// POST /api/auth/login  { "username": "...", "password": "..." }
 public class AuthDTOs {
 
     public static class LoginRequest {
         private String username;
         private String password;
-
         public String getUsername() { return username; }
-        public void setUsername(String username) { this.username = username; }
+        public void setUsername(String v) { this.username = v; }
         public String getPassword() { return password; }
-        public void setPassword(String password) { this.password = password; }
+        public void setPassword(String v) { this.password = v; }
     }
 
-    // ── Login response ─────────────────────────────────────
-    // Returns the JWT token
     public static class LoginResponse {
         private String token;
-
         public LoginResponse(String token) { this.token = token; }
         public String getToken() { return token; }
     }
 
-    // ── Create user request (admin only) ───────────────────
-    // POST /api/auth/users  { "username": "...", "password": "..." }
     public static class CreateUserRequest {
         private String username;
         private String password;
-
-        public String getUsername() { return username; }
-        public void setUsername(String username) { this.username = username; }
-        public String getPassword() { return password; }
-        public void setPassword(String password) { this.password = password; }
+        private String email;
+        private String telephone;
+        public String getUsername()  { return username; }
+        public void setUsername(String v)  { this.username = v; }
+        public String getPassword()  { return password; }
+        public void setPassword(String v)  { this.password = v; }
+        public String getEmail()     { return email; }
+        public void setEmail(String v)     { this.email = v; }
+        public String getTelephone() { return telephone; }
+        public void setTelephone(String v) { this.telephone = v; }
     }
 }
