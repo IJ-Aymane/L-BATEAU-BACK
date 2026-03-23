@@ -12,15 +12,18 @@ spring:
 
   mail:
     host: smtp.gmail.com
-    port: 587
+    port: 465
     username: ${MAIL_USERNAME:yassinabicha93@gmail.com}
     password: ${MAIL_PASSWORD:xzza qrsf ofpn gzoz}
     properties:
       mail:
         smtp:
           auth: true
-          starttls:
+          ssl:
             enable: true
+          starttls:
+            enable: false
+            required: false
 
 # ── JWT ─────────────────────────────────────────────────
 jwt:
@@ -34,4 +37,3 @@ ai:
 logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
-    org.springframework.security: TRACE
