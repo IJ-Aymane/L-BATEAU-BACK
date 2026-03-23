@@ -16,18 +16,17 @@ spring:
       suffix: .jsp
 
   # ── Mailtrap SMTP (test) ─────────────────────────────
-  mail:
-    host: sandbox.smtp.mailtrap.io
-    port: 2525
-    username: ${MAIL_USERNAME:6d9cbfd41a7e10}
-    password: ${MAIL_PASSWORD:d63cb4c164e07a}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-
+mail:
+  host: smtp.gmail.com
+  port: 587
+  username: yassinabicha93@gmail.com
+  password: Yassin2326
+  properties:
+    mail:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
 # ── JWT ─────────────────────────────────────────────────
 jwt:
   secret: ${JWT_SECRET:MySuperSecretKeyForLbateauApp1234567890ABCDEF}
