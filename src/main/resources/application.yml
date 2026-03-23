@@ -15,18 +15,18 @@ spring:
       prefix: /WEB-INF/
       suffix: .jsp
 
-  # ── Mailtrap SMTP (test) ─────────────────────────────
-mail:
-  host: smtp.gmail.com
-  port: 587
-  username: yassinabicha93@gmail.com
-  password: Yassin2326
-  properties:
-    mail:
-      smtp:
-        auth: true
-        starttls:
-          enable: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: yassinabicha93@gmail.com
+    password: xzza qrsf ofpn gzoz
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 # ── JWT ─────────────────────────────────────────────────
 jwt:
   secret: ${JWT_SECRET:MySuperSecretKeyForLbateauApp1234567890ABCDEF}
