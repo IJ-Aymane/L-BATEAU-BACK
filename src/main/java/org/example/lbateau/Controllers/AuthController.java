@@ -25,6 +25,10 @@ public class AuthController {
         return ResponseEntity.ok(new AuthDTOs.LoginResponse(token));
     }
 
+
+
+
+    //---bhb
     // ── Create user (protected) ────────────────────────────
     // POST /api/auth/users  { "username": "...", "password": "...", "email": "..." }
     @PostMapping("/users")
