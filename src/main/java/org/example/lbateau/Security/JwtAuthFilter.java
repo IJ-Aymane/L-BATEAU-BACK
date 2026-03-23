@@ -25,13 +25,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             "/api/auth/reset-password"
     );
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    @Autowired private JwtUtil jwtUtil;
+    @Autowired private UserDetailsService userDetailsService;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    // ── Skip filter entirely for public endpoints + OPTIONS ──
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
@@ -71,7 +67,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (Exception e) {
-            // Malformed / expired token → clear context, let SecurityConfig reject if needed
             SecurityContextHolder.clearContext();
         }
 
