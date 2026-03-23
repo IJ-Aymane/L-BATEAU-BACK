@@ -14,9 +14,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
+
+    private static final List<String> PUBLIC_PATHS = List.of(
+            "/api/auth/login",
+            "/api/auth/forgot-password",
+            "/api/auth/reset-password"
+    );
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -24,13 +31,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    // ── Skip filter entirely for public endpoints + OPTIONS ──
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return "OPTIONS".equals(request.getMethod()) ||
+                PUBLIC_PATHS.stream().anyMatch(path::equals);
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Extract token from Authorization header: "Bearer <token>"
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -38,22 +52,27 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = authHeader.substring(7);
+        try {
+            String token = authHeader.substring(7);
 
-        if (!jwtUtil.isTokenValid(token)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+            if (!jwtUtil.isTokenValid(token)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
-        String username = jwtUtil.extractUsername(token);
+            String username = jwtUtil.extractUsername(token);
 
-        // Only set authentication if not already set
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            UsernamePasswordAuthenticationToken auth =
-                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(auth);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken auth =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
+                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            }
+        } catch (Exception e) {
+            // Malformed / expired token → clear context, let SecurityConfig reject if needed
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);
