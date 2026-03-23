@@ -10,16 +10,11 @@ spring:
       uri: ${MONGO_URI:mongodb+srv://l-bateau:l-bateau@l-bateau.c50amf6.mongodb.net/Lbateau?retryWrites=true&w=majority}
       auto-index-creation: true
 
-  mvc:
-    view:
-      prefix: /WEB-INF/
-      suffix: .jsp
-
   mail:
     host: smtp.gmail.com
     port: 587
-    username: yassinabicha93@gmail.com
-    password: xzza qrsf ofpn gzoz
+    username: ${MAIL_USERNAME:yassinabicha93@gmail.com}
+    password: ${MAIL_PASSWORD:xzza qrsf ofpn gzoz}
     properties:
       mail:
         smtp:
@@ -35,7 +30,6 @@ jwt:
 ai:
   service:
     url: http://localhost:5000
-
 
 logging:
   level:
