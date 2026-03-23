@@ -18,14 +18,19 @@ public class CorsConfig {
         // Allow all origins (dev + prod)
         config.setAllowedOriginPatterns(List.of("*"));
 
-        // Allow all HTTP methods
+        // Allow all HTTP methods including OPTIONS preflight
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
-        // Allow all headers including Authorization
+        // Allow all request headers
         config.setAllowedHeaders(List.of("*"));
 
-        // Allow Authorization header to be sent
+        // Expose Authorization header to the browser
+        config.setExposedHeaders(List.of("Authorization"));
+
         config.setAllowCredentials(false);
+
+        // Cache preflight response for 1 hour (reduces repeated OPTIONS requests)
+        config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
