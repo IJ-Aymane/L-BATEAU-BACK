@@ -25,14 +25,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             "/api/auth/reset-password"
     );
 
+    private static final List<String> PUBLIC_PREFIXES = List.of(
+            "/api/catalogue",
+            "/api/contact"
+    );
+
     @Autowired private JwtUtil jwtUtil;
     @Autowired private UserDetailsService userDetailsService;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
-        return "OPTIONS".equals(request.getMethod()) ||
-                PUBLIC_PATHS.stream().anyMatch(path::equals);
+        return "OPTIONS".equalsIgnoreCase(request.getMethod())
+                || PUBLIC_PATHS.stream().anyMatch(path::equals)
+                || PUBLIC_PREFIXES.stream().anyMatch(path::startsWith);
     }
 
     @Override

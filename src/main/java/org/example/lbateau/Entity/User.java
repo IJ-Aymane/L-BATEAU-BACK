@@ -1,12 +1,16 @@
 package org.example.lbateau.Entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Document(collection = "users")
+@TypeAlias("org.example.lbateau.Entity.User")
 public class User {
 
     @Id
@@ -25,9 +29,9 @@ public class User {
 
     private String resetCode;
     private Date resetCodeExpiry;
+    private Set<String> roles = new LinkedHashSet<>();
     private Date dateCreation;
 
-    // ── Getters & Setters ────────────────────────────────
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -48,6 +52,17 @@ public class User {
 
     public Date getResetCodeExpiry() { return resetCodeExpiry; }
     public void setResetCodeExpiry(Date resetCodeExpiry) { this.resetCodeExpiry = resetCodeExpiry; }
+
+    public Set<String> getRoles() {
+        if (roles == null) {
+            roles = new LinkedHashSet<>();
+        }
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles != null ? new LinkedHashSet<>(roles) : new LinkedHashSet<>();
+    }
 
     public Date getDateCreation() { return dateCreation; }
     public void setDateCreation(Date dateCreation) { this.dateCreation = dateCreation; }

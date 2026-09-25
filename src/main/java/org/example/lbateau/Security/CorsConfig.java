@@ -13,18 +13,31 @@ import java.util.List;
 @Configuration
 public class CorsConfig {
 
+    private static final List<String> ALLOWED_ORIGINS = List.of(
+            "http://localhost:4200",
+            "http://127.0.0.1:4200",
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "http://localhost:3000",
+            "https://l-bateau.vercel.app"
+    );
+
+    private static final List<String> ALLOWED_METHODS = List.of(
+            "GET", "POST", "PUT", "DELETE", "OPTIONS"
+    );
+
+    private static final List<String> ALLOWED_HEADERS = List.of(
+            "Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"
+    );
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(
-                "http://localhost:5173",
-                "http://localhost:3000",
-                "https://l-bateau.vercel.app"
-        ));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedOrigins(ALLOWED_ORIGINS);
+        config.setAllowedMethods(ALLOWED_METHODS);
+        config.setAllowedHeaders(ALLOWED_HEADERS);
         config.setExposedHeaders(List.of("Authorization"));
-        config.setAllowCredentials(false);
+        config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -38,15 +51,11 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins(
-                                "http://localhost:5173",
-                                "http://localhost:3000",
-                                "https://l-bateau.vercel.app"
-                        )
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
-                        .allowedHeaders("*")
+                        .allowedOrigins(ALLOWED_ORIGINS.toArray(String[]::new))
+                        .allowedMethods(ALLOWED_METHODS.toArray(String[]::new))
+                        .allowedHeaders(ALLOWED_HEADERS.toArray(String[]::new))
                         .exposedHeaders("Authorization")
-                        .allowCredentials(false)
+                        .allowCredentials(true)
                         .maxAge(3600);
             }
         };

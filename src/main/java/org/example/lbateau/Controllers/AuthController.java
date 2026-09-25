@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin("*")
 public class AuthController {
 
     @Autowired private AuthService authService;
@@ -21,8 +20,7 @@ public class AuthController {
     // POST /api/auth/login  { "username": "...", "password": "..." }
     @PostMapping("/login")
     public ResponseEntity<AuthDTOs.LoginResponse> login(@RequestBody AuthDTOs.LoginRequest request) {
-        String token = authService.login(request.getUsername(), request.getPassword());
-        return ResponseEntity.ok(new AuthDTOs.LoginResponse(token));
+        return ResponseEntity.ok(authService.login(request.getUsername(), request.getPassword()));
     }
 
 

@@ -1,5 +1,7 @@
 package org.example.lbateau.Entity;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,6 +21,7 @@ public class Reservation {
     private String id;
     private LocalDateTime dateDebut;
     private LocalDateTime dateFin;
+    @JsonAlias("nbHeures")
     private double nombreHeures;
     private int nombrePersonnes;
     private double montantTotal;
@@ -31,4 +34,14 @@ public class Reservation {
     private String clientId;
 
     private Date dateCreation;
+
+    @JsonProperty("nbHeures")
+    public double getNbHeures() {
+        return nombreHeures;
+    }
+
+    @JsonProperty("nbHeures")
+    public void setNbHeures(double nbHeures) {
+        this.nombreHeures = nbHeures;
+    }
 }

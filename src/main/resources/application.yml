@@ -37,3 +37,9 @@ ai:
 logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+app:
+  seed:
+    enabled: ${APP_SEED_ENABLED:true}
+    admin-password: ${APP_SEED_ADMIN_PASSWORD:admin123}
+    manager-password: ${APP_SEED_MANAGER_PASSWORD:manager123}
+    client-password: ${APP_SEED_CLIENT_PASSWORD:client123}
