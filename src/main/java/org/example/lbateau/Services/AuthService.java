@@ -44,6 +44,14 @@ public class AuthService {
                 .toList();
     }
 
+    public AuthDTOs.LoginResponse registerClient(AuthDTOs.CreateUserRequest request) {
+        request.setRoles(List.of("ROLE_CLIENT"));
+        User user = createUser(request);
+        Set<String> roles = normalizeRoles(user.getRoles());
+        String token = jwtUtil.generateToken(user.getUsername(), roles);
+        return new AuthDTOs.LoginResponse(token, user, new ArrayList<>(roles));
+    }
+
     public User createClientUser(AuthDTOs.CreateUserRequest request) {
         request.setRoles(List.of("ROLE_CLIENT"));
         return createUser(request);

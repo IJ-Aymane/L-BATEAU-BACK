@@ -58,7 +58,7 @@ public class AuthDTOs {
             this.username = user.getUsername();
             this.email = user.getEmail();
             this.telephone = user.getTelephone();
-            this.roles = new ArrayList<>(user.getRoles());
+            this.roles = user.getRoles() != null ? new ArrayList<>(user.getRoles()) : new ArrayList<>();
             this.dateCreation = user.getDateCreation();
         }
 

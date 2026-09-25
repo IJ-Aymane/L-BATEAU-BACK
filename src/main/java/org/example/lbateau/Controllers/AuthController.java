@@ -23,7 +23,10 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request.getUsername(), request.getPassword()));
     }
 
-
+    @PostMapping("/register")
+    public ResponseEntity<AuthDTOs.LoginResponse> register(@RequestBody AuthDTOs.CreateUserRequest request) {
+        return ResponseEntity.ok(authService.registerClient(request));
+    }
 
 
     //---bhb
