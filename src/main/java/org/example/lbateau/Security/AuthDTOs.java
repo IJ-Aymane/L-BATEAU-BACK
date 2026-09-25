@@ -19,18 +19,30 @@ public class AuthDTOs {
 
     public static class LoginResponse {
         private String token;
+        private String id;
         private String username;
+        private String email;
+        private String telephone;
         private List<String> roles = new ArrayList<>();
+        private UserResponse user;
 
-        public LoginResponse(String token, String username, List<String> roles) {
+        public LoginResponse(String token, User user, List<String> roles) {
             this.token = token;
-            this.username = username;
+            this.id = user.getId();
+            this.username = user.getUsername();
+            this.email = user.getEmail();
+            this.telephone = user.getTelephone();
             this.roles = roles != null ? roles : new ArrayList<>();
+            this.user = new UserResponse(user);
         }
 
         public String getToken() { return token; }
+        public String getId() { return id; }
         public String getUsername() { return username; }
+        public String getEmail() { return email; }
+        public String getTelephone() { return telephone; }
         public List<String> getRoles() { return roles; }
+        public UserResponse getUser() { return user; }
     }
 
     public static class UserResponse {

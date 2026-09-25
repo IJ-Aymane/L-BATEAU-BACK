@@ -34,7 +34,7 @@ public class AuthService {
                 .orElseThrow(() -> new BadCredentialsException("Invalid credentials"));
         Set<String> roles = normalizeRoles(user.getRoles());
         String token = jwtUtil.generateToken(user.getUsername(), roles);
-        return new AuthDTOs.LoginResponse(token, user.getUsername(), new ArrayList<>(roles));
+        return new AuthDTOs.LoginResponse(token, user, new ArrayList<>(roles));
     }
 
     public List<AuthDTOs.UserResponse> listUsers() {
