@@ -31,7 +31,7 @@ public class AuthController {
     // POST /api/auth/users  { "username": "...", "password": "...", "email": "..." }
     @PostMapping("/users")
     public ResponseEntity<User> createUser(@RequestBody AuthDTOs.CreateUserRequest request) {
-        User created = authService.createUser(request);
+        User created = authService.createClientUser(request);
         created.setPassword(null);
         return ResponseEntity.ok(created);
     }
