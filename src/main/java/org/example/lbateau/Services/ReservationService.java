@@ -24,6 +24,8 @@ public class ReservationService {
     @Autowired private UserRepository userRepository;
     @Autowired private BateauRepository bateauRepository;
 
+    private static final double TVA_RATE = 0.20;
+
     private static final List<ReservationStatus> ACTIVE_STATUSES = List.of(
             ReservationStatus.PENDING,
             ReservationStatus.CONFIRMED,
@@ -33,6 +35,13 @@ public class ReservationService {
 
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
+    }
+
+    public List<ReservationDTOs.UserOption> listReservableUsers() {
+        return userRepository.findAll().stream()
+                .filter(user -> user.getRoles() != null && user.getRoles().stream().anyMatch(role -> "ROLE_CLIENT".equalsIgnoreCase(role)))
+                .map(ReservationDTOs.UserOption::new)
+                .toList();
     }
 
     public Optional<Reservation> getReservationById(String id) {
@@ -75,7 +84,7 @@ public class ReservationService {
         reservation.setDateDebut(dateDebut);
         reservation.setNombreHeures(request.getNombreHeures());
         reservation.setDateFin(dateFin);
-        reservation.setPrixTotal(bateau.getPrixParHeure() * request.getNombreHeures());
+        applyPricing(reservation, bateau, request.getMontantAvance());
         reservation.setStatut(ReservationStatus.PENDING);
         reservation.setDateCreation(LocalDateTime.now());
         return reservationRepository.save(reservation);
@@ -93,6 +102,7 @@ public class ReservationService {
         request.setBateauId(reservation.getBateau().getId());
         request.setDateDebut(reservation.getDateDebut());
         request.setNombreHeures(reservation.getNombreHeures());
+        request.setMontantAvance(reservation.getMontantAvance());
         return createReservation(request);
     }
 
@@ -124,7 +134,7 @@ public class ReservationService {
             reservation.setDateFin(dateFin);
             if (reservation.getBateau() != null) {
                 ensureSlotAvailable(reservation.getBateau().getId(), reservation.getDateDebut(), dateFin, reservation.getId());
-                reservation.setPrixTotal(reservation.getBateau().getPrixParHeure() * reservation.getNombreHeures());
+                applyPricing(reservation, reservation.getBateau(), reservation.getMontantAvance());
             }
         }
 
@@ -141,6 +151,18 @@ public class ReservationService {
 
     public void deleteReservation(String id) {
         reservationRepository.deleteById(id);
+    }
+
+    private void applyPricing(Reservation reservation, Bateau bateau, double requestedAdvance) {
+        double prixHT = bateau.getPrixParHeure() * reservation.getNombreHeures();
+        double tva = prixHT * TVA_RATE;
+        double prixTotal = prixHT + tva;
+        double avance = Math.max(0, Math.min(requestedAdvance, prixTotal));
+        reservation.setPrixHT(prixHT);
+        reservation.setTva(tva);
+        reservation.setPrixTotal(prixTotal);
+        reservation.setMontantAvance(avance);
+        reservation.setMontantRestant(prixTotal - avance);
     }
 
     private void validateCreateRequest(ReservationDTOs.CreateReservationRequest request) {

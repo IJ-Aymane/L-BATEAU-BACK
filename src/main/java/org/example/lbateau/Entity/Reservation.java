@@ -32,7 +32,11 @@ public class Reservation {
     private int nombreHeures;
 
     private LocalDateTime dateFin;
+    private double prixHT;
+    private double tva;
     private double prixTotal;
+    private double montantAvance;
+    private double montantRestant;
     private ReservationStatus statut = ReservationStatus.PENDING;
     private LocalDateTime dateCreation;
 
@@ -68,11 +72,11 @@ public class Reservation {
 
     @JsonProperty("montantPaye")
     public double getMontantPaye() {
-        return statut != null && statut.normalized() == ReservationStatus.CONFIRMED ? prixTotal : 0;
+        return montantAvance;
     }
 
-    @JsonProperty("montantRestant")
-    public double getMontantRestant() {
-        return prixTotal - getMontantPaye();
+    @JsonProperty("avance")
+    public double getAvance() {
+        return montantAvance;
     }
 }

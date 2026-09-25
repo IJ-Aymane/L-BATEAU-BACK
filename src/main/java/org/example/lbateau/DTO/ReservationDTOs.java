@@ -9,6 +9,19 @@ import org.example.lbateau.Entity.User;
 import java.time.LocalDateTime;
 
 public class ReservationDTOs {
+    public static class UserOption {
+        private final String id;
+        private final String username;
+
+        public UserOption(User user) {
+            this.id = user.getId();
+            this.username = user.getUsername();
+        }
+
+        public String getId() { return id; }
+        public String getUsername() { return username; }
+    }
+
     public static class CreateReservationRequest {
         private String userId;
         private String bateauId;
@@ -16,6 +29,9 @@ public class ReservationDTOs {
 
         @JsonAlias({"nbHeures", "duration"})
         private int nombreHeures;
+
+        @JsonAlias({"avance", "montantPaye"})
+        private double montantAvance;
 
         public String getUserId() { return userId; }
         public void setUserId(String userId) { this.userId = userId; }
@@ -25,6 +41,8 @@ public class ReservationDTOs {
         public void setDateDebut(LocalDateTime dateDebut) { this.dateDebut = dateDebut; }
         public int getNombreHeures() { return nombreHeures; }
         public void setNombreHeures(int nombreHeures) { this.nombreHeures = nombreHeures; }
+        public double getMontantAvance() { return montantAvance; }
+        public void setMontantAvance(double montantAvance) { this.montantAvance = montantAvance; }
     }
 
     public static class ReservationResponse {
@@ -42,8 +60,11 @@ public class ReservationDTOs {
         private final int nombreHeures;
         private final int nbHeures;
         private final LocalDateTime dateFin;
+        private final double prixHT;
+        private final double tva;
         private final double prixTotal;
         private final double montantTotal;
+        private final double montantAvance;
         private final double montantPaye;
         private final double montantRestant;
         private final String statut;
@@ -67,10 +88,13 @@ public class ReservationDTOs {
             this.nombreHeures = reservation.getNombreHeures();
             this.nbHeures = reservation.getNombreHeures();
             this.dateFin = reservation.getDateFin();
+            this.prixHT = reservation.getPrixHT();
+            this.tva = reservation.getTva();
             this.prixTotal = reservation.getPrixTotal();
             this.montantTotal = reservation.getPrixTotal();
-            this.montantPaye = normalized == ReservationStatus.CONFIRMED ? reservation.getPrixTotal() : 0;
-            this.montantRestant = reservation.getPrixTotal() - this.montantPaye;
+            this.montantAvance = reservation.getMontantAvance();
+            this.montantPaye = reservation.getMontantAvance();
+            this.montantRestant = reservation.getMontantRestant();
             this.statut = normalized.name();
             this.dateCreation = reservation.getDateCreation();
         }
@@ -89,8 +113,11 @@ public class ReservationDTOs {
         public int getNombreHeures() { return nombreHeures; }
         public int getNbHeures() { return nbHeures; }
         public LocalDateTime getDateFin() { return dateFin; }
+        public double getPrixHT() { return prixHT; }
+        public double getTva() { return tva; }
         public double getPrixTotal() { return prixTotal; }
         public double getMontantTotal() { return montantTotal; }
+        public double getMontantAvance() { return montantAvance; }
         public double getMontantPaye() { return montantPaye; }
         public double getMontantRestant() { return montantRestant; }
         public String getStatut() { return statut; }
@@ -107,7 +134,10 @@ public class ReservationDTOs {
         private final int nombreHeures;
         private final double prixParHeure;
         private final double subtotal;
+        private final double tva;
         private final double totalPrice;
+        private final double montantAvance;
+        private final double montantRestant;
         private final String paymentStatus;
         private final String statut;
         private final LocalDateTime dateCreation;
@@ -123,9 +153,12 @@ public class ReservationDTOs {
             this.dateFin = reservation.getDateFin();
             this.nombreHeures = reservation.getNombreHeures();
             this.prixParHeure = boat != null ? boat.getPrixParHeure() : 0;
-            this.subtotal = this.prixParHeure * reservation.getNombreHeures();
+            this.subtotal = reservation.getPrixHT();
+            this.tva = reservation.getTva();
             this.totalPrice = reservation.getPrixTotal();
-            this.paymentStatus = normalized == ReservationStatus.CONFIRMED ? "PAID" : "PENDING";
+            this.montantAvance = reservation.getMontantAvance();
+            this.montantRestant = reservation.getMontantRestant();
+            this.paymentStatus = reservation.getMontantRestant() <= 0 ? "PAID" : (reservation.getMontantAvance() > 0 ? "PARTIAL" : "PENDING");
             this.statut = normalized.name();
             this.dateCreation = reservation.getDateCreation();
         }
@@ -139,7 +172,10 @@ public class ReservationDTOs {
         public int getNombreHeures() { return nombreHeures; }
         public double getPrixParHeure() { return prixParHeure; }
         public double getSubtotal() { return subtotal; }
+        public double getTva() { return tva; }
         public double getTotalPrice() { return totalPrice; }
+        public double getMontantAvance() { return montantAvance; }
+        public double getMontantRestant() { return montantRestant; }
         public String getPaymentStatus() { return paymentStatus; }
         public String getStatut() { return statut; }
         public LocalDateTime getDateCreation() { return dateCreation; }

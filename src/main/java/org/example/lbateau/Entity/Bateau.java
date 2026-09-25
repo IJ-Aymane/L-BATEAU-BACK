@@ -4,7 +4,9 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Document(collection = "bateaux")
@@ -22,6 +24,7 @@ public class Bateau {
     private String description;
     private String statut;
     private String imageUrl;
+    private List<String> imageUrls = new ArrayList<>();
     private double prixParHeure;
     private boolean disponible;
     private Date dateCreation;

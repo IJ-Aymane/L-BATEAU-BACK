@@ -23,6 +23,12 @@ public class ReservationController {
                 .toList();
     }
 
+
+    @GetMapping("/users")
+    public List<ReservationDTOs.UserOption> getReservableUsers() {
+        return reservationService.listReservableUsers();
+    }
+
     @GetMapping("/{id}")
     public ReservationDTOs.ReservationResponse getReservationById(@PathVariable String id) {
         return reservationService.toResponse(reservationService.getReservationOrThrow(id));
